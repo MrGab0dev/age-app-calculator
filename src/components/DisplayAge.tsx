@@ -1,5 +1,6 @@
 import { useDate } from '../store/date'
 import { Counter } from './Counter'
+import { motion, Variants } from 'framer-motion'
 
 export const DisplayAge = () => {
   const {
@@ -34,10 +35,29 @@ export const DisplayAge = () => {
 
 type ChildrenType = React.ReactNode
 
+const variants: Variants = {
+  initial: {
+    y: 10,
+    opacity: 0
+  },
+  animate: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      type: 'spring'
+    }
+  }
+}
+
 const AgeSection = ({ children }: { children: ChildrenType }): JSX.Element => {
   return (
-    <section className='text-[54px] md:text-7xl xl:text-8xl flex flex-row-reverse items-end justify-end italic'>
+    <motion.section
+      initial='initial'
+      animate='animate'
+      variants={variants}
+      className='text-[54px] md:text-7xl xl:text-8xl flex flex-row-reverse items-end justify-end italic'
+    >
       {children}
-    </section>
+    </motion.section>
   )
 }
