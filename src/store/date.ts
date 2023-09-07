@@ -24,14 +24,15 @@ const differenceInDays = (currentDate: Date, oldDate: Date): number => {
   const oldDay = oldDate.getDate()
   // 2023 - 8+1: 9 - 0 = 30 days in this month
   const numberOfDays = new Date(currentYear, currentMonth + 1, 0).getDate()
-
+  if (currentDay === oldDay) return 0
   if (currentDay > oldDay) return Math.abs(currentDay - oldDay)
   // 07 + 30 - 23 = 14 days
   return Math.abs(currentDay + numberOfDays - oldDay)
 }
 
 const differenceInMonths = (currentDate: Date, oldMonth: number): number => {
-  const currentMonth = currentDate.getMonth()
+  const currentMonth = currentDate.getMonth() + 1
+  if (currentMonth === oldMonth) return 0
   if (currentMonth > oldMonth) return Math.abs(oldMonth - currentMonth)
 
   return 12 - Math.abs(oldMonth - currentMonth)
@@ -40,12 +41,13 @@ const differenceInMonths = (currentDate: Date, oldMonth: number): number => {
 const differenceInYears = (
   currentDate: Date,
   oldYear: number,
-  oldMonth: number,
-  monthsDiff: number
+  oldMonth: number
 ): number => {
   const currentMonth = currentDate.getMonth()
   const yearDiff = currentDate.getFullYear() - oldYear
-  if (monthsDiff === 12 || currentMonth > oldMonth) return yearDiff
+  if (currentDate.getFullYear() === oldYear) return 0
+  if (currentDate.getMonth() + 1 === 12 || currentMonth > oldMonth)
+    return yearDiff
   return yearDiff - 1
 }
 
@@ -103,7 +105,7 @@ export const useDate = create<State>((set, get) => ({
 
     const daysDiff = differenceInDays(currentDate, pastDate)
     const monthsDiff = differenceInMonths(currentDate, month)
-    const yearsDiff = differenceInYears(currentDate, year, monthsDiff, month)
+    const yearsDiff = differenceInYears(currentDate, year, monthsDiff)
 
     const isValidDate: boolean = validateDate(year, month, day)
     if (!isValidDate) return set({ isValidDate })
