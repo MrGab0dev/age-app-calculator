@@ -30,23 +30,38 @@ const differenceInDays = (currentDate: Date, oldDate: Date): number => {
   return Math.abs(currentDay + numberOfDays - oldDay)
 }
 
-const differenceInMonths = (currentDate: Date, oldMonth: number): number => {
+const differenceInMonths = (currentDate: Date, pastDate: Date): number => {
   const currentMonth = currentDate.getMonth() + 1
-  if (currentMonth === oldMonth) return 0
-  if (currentMonth > oldMonth) return Math.abs(oldMonth - currentMonth)
+  const currentDay = currentDate.getDate()
+  const oldMonth = pastDate.getMonth() + 1
+  const oldDay = pastDate.getDate()
 
-  return 12 - Math.abs(oldMonth - currentMonth)
+  // Same month
+  if (currentMonth === oldMonth && currentDay === oldDay) return 0 // 9 = 9 ; 23 = 23
+  if (currentMonth === oldMonth && currentDay > oldDay) return 1
+  if (currentMonth === oldMonth && currentDay < oldDay) return 11
+
+  // current month is higher than old month
+  if (currentMonth > oldMonth && currentDay === oldDay)
+    return currentMonth - oldMonth
+  if (currentMonth > oldMonth && currentDay > oldDay)
+    return currentMonth - oldMonth
+  if (currentMonth > oldMonth && currentDay < oldDay)
+    return currentMonth - oldMonth - 1
+
+  return 11 - Math.abs(currentMonth - oldMonth)
 }
 
 const differenceInYears = (
   currentDate: Date,
-  oldYear: number,
-  oldMonth: number
+  oldDate: Date,
+  diffMonth: number
 ): number => {
   const currentMonth = currentDate.getMonth()
+  const oldYear = oldDate.getFullYear()
   const yearDiff = currentDate.getFullYear() - oldYear
   if (currentDate.getFullYear() === oldYear) return 0
-  if (currentDate.getMonth() + 1 === 12 || currentMonth > oldMonth)
+  if (currentDate.getMonth() + 1 === 12 || currentMonth > diffMonth)
     return yearDiff
   return yearDiff - 1
 }
@@ -104,8 +119,8 @@ export const useDate = create<State>((set, get) => ({
     const currentDate = new Date()
 
     const daysDiff = differenceInDays(currentDate, pastDate)
-    const monthsDiff = differenceInMonths(currentDate, month)
-    const yearsDiff = differenceInYears(currentDate, year, monthsDiff)
+    const monthsDiff = differenceInMonths(currentDate, pastDate)
+    const yearsDiff = differenceInYears(currentDate, pastDate, monthsDiff)
 
     const isValidDate: boolean = validateDate(year, month, day)
     if (!isValidDate) return set({ isValidDate })
