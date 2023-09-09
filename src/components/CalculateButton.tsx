@@ -25,6 +25,7 @@ export const CalculateButton = () => {
     <div className='w-full h-24 flex relative items-center justify-center'>
       <div className='h-[1px] w-full absolute md:static z-0 md:flex-1 bg-neutral-200'></div>
       <motion.button
+        aria-label='calculate your age'
         className='w-16 h-16 md:w-24 md:h-24 bg-violet-500 hover:bg-black cursor-pointer rounded-full z-10 flex items-center justify-center'
         onClick={calculateAge}
         whileHover={{ scale: 1.15 }}

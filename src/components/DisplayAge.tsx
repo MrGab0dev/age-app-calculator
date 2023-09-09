@@ -12,22 +12,22 @@ export const DisplayAge = () => {
   return (
     <>
       <AgeSection>
-        <h3>years</h3>
-        <span className='text-violet-500 tracking-widest'>
+        <span className='text-violet-500 tracking-widest  min-w-[80px] md:min-w-[105px] xl:min-w-[150px]'>
           <Counter from={0} to={year} />
         </span>
+        years
       </AgeSection>
       <AgeSection>
-        <h3>months</h3>
-        <span className='text-violet-500 tracking-widest'>
+        <span className='text-violet-500 tracking-widest  min-w-[80px] md:min-w-[105px] xl:min-w-[150px]'>
           <Counter from={0} to={month} />
         </span>
+        months
       </AgeSection>
       <AgeSection>
-        <h3>days</h3>
-        <span className='text-violet-500 tracking-widest'>
+        <span className='text-violet-500 tracking-widest min-w-[80px]  md:min-w-[105px] xl:min-w-[150px]'>
           <Counter from={0} to={day} />
         </span>
+        days
       </AgeSection>
     </>
   )
@@ -55,9 +55,9 @@ const AgeSection = ({ children }: { children: ChildrenType }): JSX.Element => {
       initial='initial'
       animate='animate'
       variants={variants}
-      className='text-[54px] md:text-7xl xl:text-8xl flex flex-row-reverse items-end justify-end italic'
+      className='text-[54px] md:text-7xl xl:text-8xl flex items-start justify-start italic'
     >
-      {children}
+      <h3 className='flex'>{children}</h3>
     </motion.section>
   )
 }
