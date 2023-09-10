@@ -1,4 +1,5 @@
 import { useDate } from '../store/date'
+import { motion } from 'framer-motion'
 import { type FieldOptions } from '../types'
 
 export const DateForm = () => {
@@ -13,7 +14,7 @@ export const DateForm = () => {
     }))
 
   return (
-    <form className='flex items-start gap-8'>
+    <form className='flex items-start gap-8 min-h-[160px] md:min-h-[120px]'>
       <DateField dateType='day' getValue={getDay} isValid={isValidDay} />
       <DateField dateType='month' getValue={getMonth} isValid={isValidMonth} />
       <DateField dateType='year' getValue={getYear} isValid={isValidYear} />
@@ -82,11 +83,25 @@ const DateField: React.FC<DateFieldProps> = ({
           'focus:border-red-400 border-red-400'
         }`}
       />
-      <span className='text-red-400 font-normal text-sm italic'>
+      <motion.span
+        initial={{
+          y: -100,
+          opacity: 0
+        }}
+        animate={{
+          y: 0,
+          opacity: 1
+        }}
+        transition={{
+          type: 'spring',
+          delay: 0.5
+        }}
+        className='text-red-400 font-normal text-sm italic'
+      >
         {!isValid ? error : ''}
         {isEmpty && 'This field is required'}
         {!isValidDate && placeholder === 'DD' ? 'Must be a valid date' : null}
-      </span>
+      </motion.span>
     </label>
   )
 }

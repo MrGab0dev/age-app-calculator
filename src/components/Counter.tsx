@@ -13,7 +13,9 @@ export const Counter: React.FC<Props> = ({ from, to }) => {
   const rounded = useTransform(count, (latest: number) => Math.round(latest))
 
   useEffect(() => {
-    const controls = animate(count, to, { duration: 0.6 })
+    const controls = animate(count, to, {
+      duration: 0.9
+    })
     return controls.stop
   }, [to])
 
