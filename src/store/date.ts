@@ -17,63 +17,63 @@ interface State {
   calculateAge: (e: React.FormEvent<HTMLButtonElement>) => void
 }
 
-const differenceInDays = (currentDate: Date, oldDate: Date): number => {
-  const currentMonth = currentDate.getMonth()
-  const currentYear = currentDate.getFullYear()
-  const currentDay = currentDate.getDate()
-  const oldDay = oldDate.getDate()
-  // 2023 - 8+1: 9 - 0 = 30 days in this month
-  const numberOfDays = new Date(currentYear, currentMonth + 1, 0).getDate()
-  if (currentDay === oldDay) return 0
-  if (currentDay > oldDay) return Math.abs(currentDay - oldDay)
-  // 07 + 30 - 23 = 14 days
-  return Math.abs(currentDay + numberOfDays - oldDay)
-}
+const differenceOfDates = (
+  currentDate: DateType,
+  oldDate: DateType
+): DateType => {
+  const {
+    day: currentDay,
+    month: currentMonth,
+    year: currentYear
+  } = currentDate
 
-const differenceInMonths = (currentDate: Date, pastDate: Date): number => {
-  const currentMonth = currentDate.getMonth() + 1
-  const currentDay = currentDate.getDate()
-  const oldMonth = pastDate.getMonth() + 1
-  const oldDay = pastDate.getDate()
+  const { day: oldDay, month: oldMonth, year: oldYear } = oldDate
+  const daysInMonth = new Date(currentYear, currentMonth, 0).getDate()
+  const daysDiff = Math.abs(currentDay - oldDay)
+  const monthsDiff = Math.abs(currentMonth - oldMonth)
+  const yearsDiff = Math.abs(currentYear - oldYear)
+  const newDiffDays = Math.abs(daysDiff - daysInMonth)
+  const newYearsDiff = Math.abs(yearsDiff - 1)
 
-  // Same month
-  if (currentMonth === oldMonth && currentDay === oldDay) return 0 // 9 = 9 ; 23 = 23
-  if (currentMonth === oldMonth && currentDay > oldDay) return 1
-  if (currentMonth === oldMonth && currentDay < oldDay) return 11
+  if (
+    currentDay <= oldDay &&
+    currentMonth <= oldMonth &&
+    currentYear <= oldYear
+  ) {
+    return {
+      day: 0,
+      month: 0,
+      year: 0
+    }
+  }
+  // example: 1th <= 25th ✅
+  if (currentDay <= oldDay) {
+    // example: 5th < 10th ✅
+    if (currentMonth <= oldMonth)
+      return { day: newDiffDays, month: 12 - monthsDiff, year: newYearsDiff }
 
-  // current month is higher than old month
-  if (currentMonth > oldMonth && currentDay === oldDay)
-    return currentMonth - oldMonth
-  if (currentMonth > oldMonth && currentDay > oldDay)
-    return currentMonth - oldMonth
-  if (currentMonth > oldMonth && currentDay < oldDay)
-    return currentMonth - oldMonth - 1
+    return {
+      day: newDiffDays,
+      month: monthsDiff,
+      year: newYearsDiff
+    }
+  }
 
-  return 11 - Math.abs(currentMonth - oldMonth)
-}
-
-const differenceInYears = (
-  currentDate: Date,
-  oldDate: Date,
-  diffMonth: number
-): number => {
-  const currentMonth = currentDate.getMonth()
-  const oldYear = oldDate.getFullYear()
-  const yearDiff = currentDate.getFullYear() - oldYear
-  if (currentDate.getFullYear() === oldYear) return 0
-  if (currentDate.getMonth() + 1 === 12 || currentMonth > diffMonth)
-    return yearDiff
-  return yearDiff - 1
+  return {
+    day: daysDiff,
+    month: monthsDiff,
+    year: yearsDiff
+  }
 }
 
 // Remember that the month is 0-based so February is actually 1...
-const validateDate = (year: number, month: number, day: number): boolean => {
+const validateDate = ({ day, month, year }: DateType): boolean => {
   const accurateMonth = month - 1
   const date = new Date(year, accurateMonth, day)
 
   if (
     date.getFullYear() == year &&
-    date.getMonth() == accurateMonth &&
+    date.getMonth() == month - 1 &&
     date.getDate() == day
   ) {
     return true
@@ -115,18 +115,25 @@ export const useDate = create<State>((set, get) => ({
 
     if (!validateFields) return set({ isEmpty: true })
 
-    const pastDate = new Date(`${year}-${month}-${day}`)
-    const currentDate = new Date()
+    const oldDate: DateType = {
+      day: day,
+      month: month,
+      year: year
+    }
+    const currentDate: DateType = {
+      day: new Date().getDate(),
+      month: new Date().getMonth() + 1,
+      year: new Date().getFullYear()
+    }
 
-    const daysDiff = differenceInDays(currentDate, pastDate)
-    const monthsDiff = differenceInMonths(currentDate, pastDate)
-    const yearsDiff = differenceInYears(currentDate, pastDate, monthsDiff)
+    const newDate: DateType = differenceOfDates(currentDate, oldDate)
+    console.log(newDate)
 
-    const isValidDate: boolean = validateDate(year, month, day)
+    const isValidDate: boolean = validateDate(oldDate)
     if (!isValidDate) return set({ isValidDate })
 
     set({
-      age: { day: daysDiff, month: monthsDiff, year: yearsDiff },
+      age: newDate,
       isValidDate
     })
   }

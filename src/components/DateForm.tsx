@@ -67,7 +67,7 @@ const DateField: React.FC<DateFieldProps> = ({
         className={`uppercase  text-sm tracking-[0.2em] ${
           !isValid || isEmpty || !isValidDate
             ? 'text-red-400'
-            : 'text-stone-400'
+            : 'text-stone-500'
         }`}
       >
         {dateType}
@@ -77,7 +77,7 @@ const DateField: React.FC<DateFieldProps> = ({
         type='number'
         placeholder={placeholder}
         onChange={handleInput}
-        className={`cursor-pointer border-2 border-neutral-300 rounded-lg p-4 md:px-6 md:py-3 text-xl md:text-2xl xl:text-3xl focus:outline-none focus:border-purple-600 ${
+        className={`min-w-full cursor-pointer border-2 border-neutral-300 rounded-lg p-4 md:px-6 md:py-3 text-xl md:text-2xl xl:text-3xl focus:outline-none focus:border-purple-600 ${
           (!isValid || isEmpty || !isValidDate) &&
           'focus:border-red-400 border-red-400'
         }`}
